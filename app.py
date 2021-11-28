@@ -7,5 +7,6 @@ CORS(app) #comment this on deployment
 @app.route("/test")
 def index():
     return {
-        'name':['orange', 'apple']
+        'moveTo': "e4",
+        'piece': "d3"
     }

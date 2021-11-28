@@ -171,7 +171,7 @@ export class Game extends React.Component {
             return;
         }
 
-        setTimeout(()=> {
+        setTimeout(async ()=> {
             const currentState = this.getCurrentState();
             const boardState = currentState.boardState;
 
@@ -183,9 +183,19 @@ export class Game extends React.Component {
             if (piece === null) {
                 //computerMove = this.Opponent.getRandomMove(boardState, 'player2');
                 computerMove = this.Opponent.getSmartMove(this.state, boardState, 'player2');
+                var data = await fetch('http://127.0.0.1:5000/test').then(response =>{
+                    if(response.ok){
+                        return response.json()
+                    }
+                })                
                 
+                computerMove = data;
+
                 coordinates = computerMove.piece;
                 moveTo = computerMove.moveTo;
+
+                console.log(boardState)
+                
             } else {
                 // Prevent the computer player from choosing another piece to move. It must move the active piece
                 computerMove = this.ReactCheckers.getMoves(boardState, piece, boardState[piece].isKing, true);
