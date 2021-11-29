@@ -63,7 +63,7 @@ export class Game extends React.Component {
         }
 
         board = this.initPlayers(board);
-
+    
         return board;
     }
 
@@ -183,7 +183,7 @@ export class Game extends React.Component {
             if (piece === null) {
                 //computerMove = this.Opponent.getRandomMove(boardState, 'player2');
                 computerMove = this.Opponent.getSmartMove(this.state, boardState, 'player2');
-                var data = await fetch('http://127.0.0.1:5000/test').then(response =>{
+                var data = await fetch('http://127.0.0.1:5000/computerMove').then(response =>{
                     if(response.ok){
                         return response.json()
                     }
@@ -194,7 +194,6 @@ export class Game extends React.Component {
                 coordinates = computerMove.piece;
                 moveTo = computerMove.moveTo;
 
-                console.log(boardState)
                 
             } else {
                 // Prevent the computer player from choosing another piece to move. It must move the active piece
@@ -232,7 +231,7 @@ export class Game extends React.Component {
         1000);
     }
 
-    updateStatePostMove(postMoveState) {
+    async updateStatePostMove(postMoveState) {
         this.setState({
             history: this.state.history.concat([{
                 boardState: postMoveState.boardState,
@@ -245,7 +244,18 @@ export class Game extends React.Component {
             stepNumber: this.state.history.length,
             winner: postMoveState.winner,
         });
-    }
+
+
+        await fetch('http://localhost:5000/updateBoard',{
+                'method':'POST',
+                headers : {
+                'Content-Type':'application/json'
+        },
+        body:JSON.stringify(postMoveState.boardState)
+        })
+        .then(response => response.json())
+        .catch(error => console.log(error))
+        }
 
     undo() {
         const backStep = parseInt(this.state.stepNumber, 10) -1;

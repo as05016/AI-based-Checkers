@@ -119,6 +119,7 @@ export class ReactCheckers {
             movingPiece.isKing = true;
         }
 
+
         // Move piece to new coordinates
         boardState[state.activePiece] = null;
         boardState[coordinates] = movingPiece;
