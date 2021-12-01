@@ -81,6 +81,7 @@ export class Game extends React.Component {
             board[i] = self.createPiece(i, 'player2');
         });
 
+
         return board;
     }
 
@@ -90,6 +91,14 @@ export class Game extends React.Component {
         piece.player   = player;
         piece.location = location;
         piece.isKing   = false;
+
+
+        let mapping = {"a": 1, "b":2, "c": 3, "d":4, "e": 5, "f":6, "g": 7, "h":8}
+
+        piece.col = mapping[location.charAt(0)];
+        piece.row = location.charAt(1);
+
+
 
         return piece;
     }

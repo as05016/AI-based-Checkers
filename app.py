@@ -42,8 +42,8 @@ def get_board_state():
     boardState = request.json
     game.boardState = boardState
 
-    # print("fromupdateBoard")
-    # pp.pprint(game.get_board_state())
+    print("fromupdateBoard")
+    pp.pprint(game.get_board_state())
 
 
     return {
