@@ -27,7 +27,101 @@ export class ReactCheckers {
         return corners;
     }
 
-    getMoves(boardState, coordinates, isKing = false, hasJumped = false) {
+    async getValidMoves(boardState, coordinates, isKing = false, hasJumped = false) {
+
+        let allMoves = {};
+
+        for (const [key, value] of Object.entries(boardState)) {
+            allMoves[key] = null;
+        }
+
+
+        if (boardState[coordinates] === null) {
+            return [];
+        }
+
+        for (const [key, value] of Object.entries(boardState)) {
+            if(value == null){
+                continue
+            }
+
+            coordinates = key;
+          
+
+        let moves = [];
+        let jumps = [];
+
+        let killJumps = {};
+
+        const corners = this.getCorners(coordinates);
+
+        const row = utils.getRowAsInt(coordinates);
+        const player = boardState[coordinates].player;
+
+        const advanceRow = player === 'player1' ? row - 1 : row + 1;
+
+        for (let key in corners) {
+            if (!corners.hasOwnProperty(key)) {
+                continue;
+            }
+
+            let cornerCoordinates = corners[key];
+
+            if (cornerCoordinates === null) {
+                continue;
+            }
+
+            if (!isKing && cornerCoordinates.indexOf(advanceRow) < 0) {
+                continue;
+            }
+
+            if (boardState[cornerCoordinates] === null) {
+                moves.push(cornerCoordinates);
+            } else {
+                let neighborPiece = boardState[cornerCoordinates];
+
+                if (neighborPiece.player === player) {
+                    continue;
+                }
+
+                let opponentCorners = this.getCorners(cornerCoordinates);
+                let potentialJump = opponentCorners[key];
+
+                if (boardState[potentialJump] === null) {
+                    killJumps[cornerCoordinates] = potentialJump;
+                    jumps.push(potentialJump);
+                }
+            }
+        }
+
+        let movesOut;
+
+        if (hasJumped === false) {
+            movesOut = moves.concat(jumps);
+        } else {
+            // If the piece has already jumped, only additional jumps are available
+            movesOut = jumps;
+        }
+
+        let killJumpsOut = jumps.length > 0 ? killJumps : null;
+
+        allMoves[coordinates] = [movesOut, killJumpsOut];
+
+    }
+    //for loop exit
+    await fetch('http://localhost:5000/getAllMoves',{
+                'method':'POST',
+                headers : {
+                'Content-Type':'application/json'
+        },
+        body:JSON.stringify(allMoves)
+        })
+        .then(response => response.json())
+        .catch(error => console.log(error))
+        
+    }
+
+    getMoves(boardState, coordinates, isKing = false, hasJumped = false){
 
         if (boardState[coordinates] === null) {
             return [];
@@ -91,7 +185,6 @@ export class ReactCheckers {
         let killJumpsOut = jumps.length > 0 ? killJumps : null;
 
         return [movesOut, killJumpsOut];
-
     }
 
     movePiece(coordinates, state) {
@@ -163,6 +256,7 @@ export class ReactCheckers {
         stateOut.hasJumped = hasJumped === true ? player : null;
         stateOut.winner = this.evaluateWinner(boardState);
 
+        this.getValidMoves(boardState);
         return stateOut;
     }
 
