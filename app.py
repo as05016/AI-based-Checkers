@@ -58,8 +58,6 @@ def get_board_state():
 
     # print("fromupdateBoard")
     # pp.pprint(game.get_board_state())
-
-
     return {
         'response': 'OK'
     }
