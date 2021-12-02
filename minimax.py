@@ -135,6 +135,7 @@ def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
                 best_move = move
             alpha = max(alpha, evaluation)
             if beta <= alpha:
+                # print("pruning max")
                 break
         return maxEval, best_move
     else:
@@ -149,6 +150,7 @@ def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
                 best_move = move
             beta = max(beta, evaluation)
             if alpha <= beta:
+                # print("pruning min")
                 break
         return minEval, best_move
 
