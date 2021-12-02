@@ -99,7 +99,6 @@ def minimax(board, depth, max_player, player):
         best_move = None
         for move in allMoves:
             new_board = get_new_board(board,move)
-            #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
             evaluation = minimax(new_board, depth-1, False, "player1")[0]
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
@@ -110,7 +109,6 @@ def minimax(board, depth, max_player, player):
         best_move = None
         for move in allMoves:
             new_board = get_new_board(board,move)
-            #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
             evaluation = minimax(new_board, depth-1, True, "player2")[0]
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
@@ -188,10 +186,21 @@ def get_total_kings(board):
     return total
 
 def is_winner(board,player):
-    if get_pieces_left(board,player)[0] <= 0:
+    if get_pieces_left(board,player)[0] <= 0 or len(get_all_moves(board, player)) == 0:
         return False
-    elif (get_total_pieces(board)-get_pieces_left(board,player)[0]) <= 0:
-        return True
+    elif player == "player1":
+        if (get_total_pieces(board)-get_pieces_left(board,player)[0]) <= 0:
+            return True
+
+        if len(get_all_moves(board, "player2")) == 0:
+            return True
+
+    elif player == "player2":
+        if (get_total_pieces(board)-get_pieces_left(board,player)[0]) <= 0:
+            return True
+
+        if len(get_all_moves(board, "player1")) == 0:
+            return True
     return None 
 
 # def evaluate(board,our_player):
@@ -327,5 +336,5 @@ def get_all_moves(board, c_player):
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
 
-print(minimax(boardState,4, True,'player2'))
-print(minimax_with_alpha_beta(boardState,4,True,'player2', float('-inf'), float('inf')))
+#print(minimax(boardState,4, True,'player2'))
+#print(minimax_with_alpha_beta(boardState,4,True,'player2', float('-inf'), float('inf')))
