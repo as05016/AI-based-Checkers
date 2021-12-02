@@ -20,16 +20,21 @@ class Game:
     def get_board_state(self):
         return self.boardState
 
+    def set_board_state(self, state):
+        self.boardState = state
+
 game = Game()
+i = 0
 
 @app.route("/computerMove")
 def index():
-    score,move =minimax(game.get_board_state(),3, True,'player2')
+    score,move =minimax(game.get_board_state(),5, True,'player2')
 
     #Logic to find computerMove
     # print("fromComputerMove")
     # pp.pprint(game.get_board_state())
     
+    print(move, score)
     return {
         'moveTo': move[1],
         'piece': move[0]
@@ -41,10 +46,10 @@ def index():
 def get_board_state():
 
     boardState = request.json
-    game.boardState = boardState
+    game.set_board_state(boardState)
 
-    print("fromupdateBoard")
-    pp.pprint(game.get_board_state())
+    # print("fromupdateBoard")
+    # pp.pprint(game.get_board_state())
 
 
     return {

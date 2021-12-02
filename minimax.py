@@ -93,14 +93,14 @@ def minimax(board, depth, max_player, player):
 
     # print(allMoves)
     if depth == 0 or is_winner(board,player) != None:
-        return evaluate(board,player), board
+        return evaluate(board), board
     if max_player:
         maxEval = float('-inf')
         best_move = None
         for move in allMoves:
-            new_board=get_new_board(board,move)
+            new_board = get_new_board(board,move)
             #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
-            evaluation = minimax(new_board, depth-1, False, player)[0]
+            evaluation = minimax(new_board, depth-1, False, "player1")[0]
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
                 best_move = move
@@ -109,9 +109,9 @@ def minimax(board, depth, max_player, player):
         minEval = float('inf')
         best_move = None
         for move in allMoves:
-            new_board=get_new_board(board,move)
+            new_board = get_new_board(board,move)
             #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
-            evaluation = minimax(new_board, depth-1, True, player)[0]
+            evaluation = minimax(new_board, depth-1, True, "player2")[0]
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
                 best_move = move
@@ -194,9 +194,16 @@ def is_winner(board,player):
         return True
     return None 
 
-def evaluate(board,our_player):
-    player_pieces=get_pieces_left(board,our_player)[0]
-    player_kings=get_num_kings(board,our_player)
+# def evaluate(board,our_player):
+#     player_pieces=get_pieces_left(board,our_player)[0]
+#     player_kings=get_num_kings(board,our_player)
+#     opponent_pieces=get_total_pieces(board)-player_pieces
+#     opponent_kings=get_total_kings(board)-player_kings
+#     return player_pieces - opponent_pieces + (player_kings * 0.5 - opponent_kings * 0.5)
+
+def evaluate(board):
+    player_pieces=get_pieces_left(board,"player2")[0]
+    player_kings=get_num_kings(board,"player2")
     opponent_pieces=get_total_pieces(board)-player_pieces
     opponent_kings=get_total_kings(board)-player_kings
     return player_pieces - opponent_pieces + (player_kings * 0.5 - opponent_kings * 0.5)
@@ -208,10 +215,13 @@ def evaluate(board,our_player):
 def get_new_board(board,move):
     n_board=deepcopy(board)
     if (abs(int(move[0][1])-int(move[1][1]))==2):
-        killpiece=move[0]
         diff_h = int(move[0][1])-int(move[1][1]) # -ve in right direction 2 or -2
-        diff_v = mapping_from_location(move[0])[1]-mapping_from_location(move[1])[1] # -ve when moving up
-        killpiece[1]= str(int(killpiece[1])-diff_h*0.5)
+        diff_v = mapping_from_location[move[0]][1] - mapping_from_location[move[1]][1] # -ve when moving up
+        kill_row = int(move[0][1])-diff_h*0.5
+        kill_col = mapping_from_location[move[0]][1] - (diff_v*0.5)
+        kill_piece = mapping_from_coordinates[str([int(kill_row), int(kill_col)])]
+
+        n_board[kill_piece] = None
 
 
     n_board[move[1]]=n_board[move[0]]
@@ -316,3 +326,5 @@ def get_all_moves(board, c_player):
 # print(minimax_with_alpha_beta(boardState,2,True,'player2',float('-inf'), float('inf')))
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
+
+minimax(boardState,3, True,'player2')
