@@ -1,7 +1,7 @@
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS #comment this on deployment
 import pprint
-
+from  minimax import minimax
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
@@ -24,14 +24,15 @@ game = Game()
 
 @app.route("/computerMove")
 def index():
+    score,move =minimax(game.get_board_state(),3, True,'player2')
 
     #Logic to find computerMove
     # print("fromComputerMove")
     # pp.pprint(game.get_board_state())
-
+    
     return {
-        'moveTo': "e4",
-        'piece': "d3"
+        'moveTo': move[1],
+        'piece': move[0]
     }
 
     

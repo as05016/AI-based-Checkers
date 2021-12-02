@@ -163,7 +163,7 @@ def get_pieces_left(board,our_player):
             if board[piece]['player']==our_player:
                 player_pieces+=1
                 pieces.append(piece)
-    return player_pieces,pieces
+    return [player_pieces, pieces]
 
 def get_num_kings(board,our_player):
     player_kings=0
@@ -190,7 +190,7 @@ def get_total_kings(board):
 def is_winner(board,player):
     if get_pieces_left(board,player)[0] <= 0:
         return False
-    elif get_total_pieces(board)-get_pieces_left(board,player)[0] <= 0:
+    elif (get_total_pieces(board)-get_pieces_left(board,player)[0]) <= 0:
         return True
     return None 
 
@@ -207,9 +207,13 @@ def evaluate(board,our_player):
 #     dict={'piece': piece, 'moveTo':''}
 def get_new_board(board,move):
     n_board=deepcopy(board)
-    # current= move[0]
-    # destination= move[1]
-    # print(current,destination)
+    if (abs(int(move[0][1])-int(move[1][1]))==2):
+        killpiece=move[0]
+        diff_h = int(move[0][1])-int(move[1][1]) # -ve in right direction 2 or -2
+        diff_v = mapping_from_location(move[0])[1]-mapping_from_location(move[1])[1] # -ve when moving up
+        killpiece[1]= str(int(killpiece[1])-diff_h*0.5)
+
+
     n_board[move[1]]=n_board[move[0]]
     n_board[move[0]]= None
     return n_board
@@ -308,7 +312,7 @@ def get_all_moves(board, c_player):
 # print("The optimal value is : ", end = "")
 # print(minimax(0,treeDepth, 0, True, scores))
 
-print(minimax(boardState,2,True,'player2'))
-print(minimax_with_alpha_beta(boardState,2,True,'player2',float('-inf'), float('inf')))
+# print(minimax(boardState,2,True,'player2'))
+# print(minimax_with_alpha_beta(boardState,2,True,'player2',float('-inf'), float('inf')))
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
