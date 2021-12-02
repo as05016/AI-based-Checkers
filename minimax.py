@@ -148,7 +148,7 @@ def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
                 best_move = move
-            beta = max(beta, evaluation)
+            beta = min(beta, evaluation)
             if alpha <= beta:
                 print("pruning min")
                 break
@@ -327,5 +327,5 @@ def get_all_moves(board, c_player):
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
 
-print(minimax(boardState,3, True,'player2'))
-print(minimax_with_alpha_beta(boardState,3,True,'player2', float('-inf'), float('inf')))
+print(minimax(boardState,4, True,'player2'))
+print(minimax_with_alpha_beta(boardState,4,True,'player2', float('-inf'), float('inf')))
