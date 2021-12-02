@@ -87,6 +87,7 @@ allPosMoves ={   'a1': None,
     'h6': None,
     'h7': [[], None],
     'h8': None}
+
 def minimax(board, depth, max_player, player):
     allMoves= get_all_moves(board, player)
 
@@ -116,6 +117,42 @@ def minimax(board, depth, max_player, player):
                 best_move = move
         return minEval, best_move
 
+def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
+    allMoves= get_all_moves(board, player)
+
+    # print(allMoves)
+    if depth == 0 or is_winner(board,player) != None:
+        return evaluate(board,player), board
+    if max_player:
+        maxEval = float('-inf')
+        best_move = None
+        for move in allMoves:
+            new_board=get_new_board(board,move)
+            #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
+            evaluation = minimax(new_board, depth-1, False, player, alpha, beta)[0]
+            maxEval = max(maxEval, evaluation)
+            if maxEval == evaluation:
+                best_move = move
+            alpha = max(alpha, evaluation)
+            if beta <= alpha:
+                break
+        return maxEval, best_move
+    else:
+        minEval = float('inf')
+        best_move = None
+        for move in allMoves:
+            new_board=get_new_board(board,move)
+            #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
+            evaluation = minimax(new_board, depth-1, True, player, alpha, beta)[0]
+            minEval = min(minEval, evaluation)
+            if minEval == evaluation:
+                best_move = move
+            beta = max(beta, evaluation)
+            if alpha <= beta:
+                break
+        return minEval, best_move
+
+
 def get_pieces_left(board,our_player):
     player_pieces=0
     pieces=[]
@@ -125,6 +162,7 @@ def get_pieces_left(board,our_player):
                 player_pieces+=1
                 pieces.append(piece)
     return player_pieces,pieces
+
 def get_num_kings(board,our_player):
     player_kings=0
     for piece in board:
@@ -132,12 +170,14 @@ def get_num_kings(board,our_player):
             if board[piece]['player']==our_player and (board[piece]['isKing']):
                 player_kings+=1
     return player_kings
+
 def get_total_pieces(board):
     total= 0
     for piece in board:
         if board[piece]!=None:
             total+= 1
     return total
+
 def get_total_kings(board):
     total= 0
     for piece in board:
@@ -267,5 +307,6 @@ def get_all_moves(board, c_player):
 # print(minimax(0,treeDepth, 0, True, scores))
 
 print(minimax(boardState,2,True,'player2'))
+print(minimax_with_alpha_beta(boardState,2,True,'player2',float('-inf'), float('inf')))
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
