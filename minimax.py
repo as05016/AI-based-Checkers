@@ -1,6 +1,6 @@
 import math
 from copy import deepcopy
-from flask.globals import current_app
+# from flask.globals import current_app
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -122,20 +122,20 @@ def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
 
     # print(allMoves)
     if depth == 0 or is_winner(board,player) != None:
-        return evaluate(board,player), board
+        return evaluate(board), board
     if max_player:
         maxEval = float('-inf')
         best_move = None
         for move in allMoves:
             new_board=get_new_board(board,move)
             #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
-            evaluation = minimax(new_board, depth-1, False, player, alpha, beta)[0]
+            evaluation = minimax_with_alpha_beta(new_board, depth-1, False, 'player1', alpha, beta)[0]
             maxEval = max(maxEval, evaluation)
             if maxEval == evaluation:
                 best_move = move
             alpha = max(alpha, evaluation)
             if beta <= alpha:
-                # print("pruning max")
+                print("pruning max")
                 break
         return maxEval, best_move
     else:
@@ -144,13 +144,13 @@ def minimax_with_alpha_beta(board, depth, max_player, player, alpha, beta):
         for move in allMoves:
             new_board=get_new_board(board,move)
             #NEED TO COMPUTE ALL MOVES FOR NEW BOARD & PASS THAT TO MINIMAX TOO
-            evaluation = minimax(new_board, depth-1, True, player, alpha, beta)[0]
+            evaluation = minimax_with_alpha_beta(new_board, depth-1, True, 'player2', alpha, beta)[0]
             minEval = min(minEval, evaluation)
             if minEval == evaluation:
                 best_move = move
             beta = max(beta, evaluation)
             if alpha <= beta:
-                # print("pruning min")
+                print("pruning min")
                 break
         return minEval, best_move
 
@@ -327,4 +327,5 @@ def get_all_moves(board, c_player):
 
 # pp.pprint(get_all_moves(boardState2, "player1"))
 
-minimax(boardState,3, True,'player2')
+print(minimax(boardState,3, True,'player2'))
+print(minimax_with_alpha_beta(boardState,3,True,'player2', float('-inf'), float('inf')))
